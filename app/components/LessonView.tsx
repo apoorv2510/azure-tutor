@@ -1,5 +1,6 @@
 'use client'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { Topic, Resource } from '@/app/data/curriculum'
 import { lessons } from '@/app/data/lessons'
 
@@ -80,7 +81,7 @@ export default function LessonView({ topic, onStartQuiz, onStartChat }: Props) {
         {/* Lesson markdown */}
         {content ? (
           <div className="lesson-prose">
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           </div>
         ) : (
           <div className="text-center py-20">
