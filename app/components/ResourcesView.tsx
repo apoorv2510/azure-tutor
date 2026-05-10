@@ -35,6 +35,107 @@ export default function ResourcesView({ getStatus, onSelectTopic }: Props) {
 
       <div className="px-6 py-6 max-w-5xl space-y-10">
 
+        {/* ── Exam Scheduling CTA ──────────────────────────── */}
+        <section>
+          <div className="rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+            style={{ background: 'linear-gradient(135deg, rgba(29,78,216,0.18), rgba(109,40,217,0.12))', border: '1px solid rgba(99,102,241,0.25)' }}>
+            <div className="flex-1">
+              <div className="text-xs font-semibold text-blue-300 uppercase tracking-wider mb-1">Ready to get certified?</div>
+              <h2 className="text-base font-bold text-white mb-1">Schedule Your Exam</h2>
+              <p className="text-xs text-slate-400">Book your AZ-900 or AZ-104 exam through Pearson VUE — the official Microsoft testing partner.</p>
+            </div>
+            <div className="flex flex-col gap-2 shrink-0 w-full sm:w-auto">
+              <a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/"
+                target="_blank" rel="noopener noreferrer"
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-center text-white transition-all hover:brightness-110"
+                style={{ background: 'rgba(59,130,246,0.8)', border: '1px solid rgba(59,130,246,0.5)' }}>
+                Schedule AZ-900 →
+              </a>
+              <a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/"
+                target="_blank" rel="noopener noreferrer"
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-center text-white transition-all hover:brightness-110"
+                style={{ background: 'rgba(139,92,246,0.8)', border: '1px solid rgba(139,92,246,0.5)' }}>
+                Schedule AZ-104 →
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Recommended Practice Tests ───────────────────── */}
+        <section>
+          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recommended Practice Tests</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[
+              {
+                name: 'Whizlabs AZ-900',
+                desc: '495 practice questions, 15+ mock exams',
+                badge: 'Best value',
+                badgeColor: 'text-emerald-300 bg-emerald-900/40',
+                url: 'https://www.whizlabs.com/microsoft-azure-certification-az-900/',
+                exam: 'AZ-900',
+                examColor: 'text-blue-400',
+              },
+              {
+                name: 'Whizlabs AZ-104',
+                desc: '700+ practice questions, hands-on labs',
+                badge: 'Most popular',
+                badgeColor: 'text-amber-300 bg-amber-900/40',
+                url: 'https://www.whizlabs.com/microsoft-azure-certification-az-104/',
+                exam: 'AZ-104',
+                examColor: 'text-violet-400',
+              },
+              {
+                name: 'MeasureUp AZ-900',
+                desc: 'Official Microsoft-endorsed practice tests',
+                badge: 'Official partner',
+                badgeColor: 'text-blue-300 bg-blue-900/40',
+                url: 'https://www.measureup.com/microsoft-azure-fundamentals-az-900.html',
+                exam: 'AZ-900',
+                examColor: 'text-blue-400',
+              },
+              {
+                name: 'MeasureUp AZ-104',
+                desc: 'Official Microsoft-endorsed practice tests',
+                badge: 'Official partner',
+                badgeColor: 'text-blue-300 bg-blue-900/40',
+                url: 'https://www.measureup.com/microsoft-azure-administrator-az-104.html',
+                exam: 'AZ-104',
+                examColor: 'text-violet-400',
+              },
+              {
+                name: 'Udemy AZ-900 Bestseller',
+                desc: '4.7★ · 250k+ students · full course',
+                badge: 'Top rated',
+                badgeColor: 'text-rose-300 bg-rose-900/40',
+                url: 'https://www.udemy.com/course/az900-azure/',
+                exam: 'AZ-900',
+                examColor: 'text-blue-400',
+              },
+              {
+                name: 'Udemy AZ-104 Bestseller',
+                desc: '4.6★ · 100k+ students · full course',
+                badge: 'Top rated',
+                badgeColor: 'text-rose-300 bg-rose-900/40',
+                url: 'https://www.udemy.com/course/microsoft-az-100-azure-administrator/',
+                exam: 'AZ-104',
+                examColor: 'text-violet-400',
+              },
+            ].map(item => (
+              <a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer"
+                className="flex flex-col gap-2 p-4 rounded-2xl transition-all card-hover"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center justify-between gap-2">
+                  <span className={`text-xs font-bold font-mono ${item.examColor}`}>{item.exam}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${item.badgeColor}`}>{item.badge}</span>
+                </div>
+                <div className="text-sm font-semibold text-white">{item.name}</div>
+                <div className="text-xs text-slate-500">{item.desc}</div>
+                <div className="text-xs text-blue-400 mt-auto">View course ↗</div>
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* Quick access: practice assessments */}
         <section>
           <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Free Practice Assessments</h2>

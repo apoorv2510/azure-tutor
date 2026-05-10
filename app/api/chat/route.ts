@@ -101,7 +101,6 @@ export async function POST(req: NextRequest) {
           ...messages,
         ],
         stream: true,
-        seed: 42,
       }),
     })
   } catch (err) {

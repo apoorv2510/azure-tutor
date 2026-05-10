@@ -20,13 +20,13 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      // OAuth providers + Pollinations AI
-      "connect-src 'self' https://text.pollinations.ai https://fonts.gstatic.com https://accounts.google.com https://github.com https://api.github.com",
-      // Profile images from Google and GitHub
-      "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com",
+      // OAuth providers + Pollinations AI + AdSense
+      "connect-src 'self' https://text.pollinations.ai https://fonts.gstatic.com https://accounts.google.com https://github.com https://api.github.com https://pagead2.googlesyndication.com https://adservice.google.com",
+      // Profile images from Google and GitHub + AdSense
+      "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net",
       "font-src 'self' data: https://fonts.gstatic.com",
-      // Allow Google OAuth popup/redirect frames
-      "frame-src https://accounts.google.com",
+      // Allow Google OAuth + AdSense frames
+      "frame-src https://accounts.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
       "object-src 'none'",
       "upgrade-insecure-requests",
     ].join('; '),

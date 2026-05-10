@@ -11,7 +11,9 @@ export default async function LoginPage({
   if (session) redirect('/')
 
   const params = await searchParams
-  const callbackUrl = params.callbackUrl ?? '/'
+  // Reject external URLs to prevent open redirect attacks
+  const raw = params.callbackUrl ?? '/'
+  const callbackUrl = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/'
   const error = params.error
 
   return (
