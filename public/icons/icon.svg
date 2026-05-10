@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0a1628"/>
+  <rect width="512" height="512" rx="112" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#93c5fd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Cloud shape -->
+  <ellipse cx="256" cy="210" rx="130" ry="72" fill="none" stroke="url(#textGrad)" stroke-width="18" stroke-linecap="round"/>
+  <ellipse cx="190" cy="232" rx="72" ry="52" fill="none" stroke="url(#textGrad)" stroke-width="18"/>
+  <rect x="126" y="232" width="260" height="52" rx="26" fill="#1d4ed8"/>
+  <!-- Az text -->
+  <text x="256" y="360" font-family="Arial, sans-serif" font-weight="900" font-size="130" fill="url(#textGrad)" text-anchor="middle">Az</text>
+</svg>
