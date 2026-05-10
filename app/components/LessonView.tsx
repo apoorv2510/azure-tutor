@@ -81,7 +81,8 @@ export default function LessonView({ topic, onStartQuiz, onStartChat }: Props) {
         {/* Lesson markdown */}
         {content ? (
           <div className="lesson-prose">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <ReactMarkdown remarkPlugins={[remarkGfm as any]}>{content}</ReactMarkdown>
           </div>
         ) : (
           <div className="text-center py-20">
