@@ -2,10 +2,9 @@
 import Script from 'next/script'
 import { useEffect } from 'react'
 
-const PUB_ID = process.env.NEXT_PUBLIC_ADSENSE_PUB_ID
+const PUB_ID = 'ca-pub-2559563383301990'
 
 export function AdSenseScript() {
-  if (!PUB_ID) return null
   return (
     <Script
       src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${PUB_ID}`}
@@ -17,14 +16,11 @@ export function AdSenseScript() {
 
 export function AdBanner({ slot, className = '' }: { slot: string; className?: string }) {
   useEffect(() => {
-    if (!PUB_ID) return
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({})
     } catch {}
   }, [])
-
-  if (!PUB_ID) return null
 
   return (
     <ins
