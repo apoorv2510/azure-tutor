@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import AuthProvider from '@/app/components/AuthProvider'
-import { AdSenseScript } from '@/app/components/AdBanner'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
@@ -68,6 +67,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <head>
+        {/* Google AdSense — must be in <head> as raw script for crawler visibility */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2559563383301990" crossOrigin="anonymous" />
         {/* iOS PWA - display as standalone app, no Safari UI */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -80,7 +82,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="msapplication-TileImage" content="/icons/icon-144.png" />
       </head>
       <body className="antialiased overflow-hidden" style={{ background: '#080c14', color: '#f1f5f9' }}>
-        <AdSenseScript />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
