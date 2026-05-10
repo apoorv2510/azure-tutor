@@ -1,5 +1,7 @@
 'use client'
 import { curriculum, Topic } from '@/app/data/curriculum'
+import { useSession, signIn, signOut } from 'next-auth/react'
+import Image from 'next/image'
 
 type Status = 'studied' | 'quizzed' | 'mastered' | null
 
@@ -19,12 +21,13 @@ const statusDot: Record<string, string> = {
 }
 
 export default function Sidebar({ activeTopic, getStatus, onSelectTopic, studied, totalTopics, onShowResources }: Props) {
+  const { data: session, status } = useSession()
   const pct = Math.round((studied / totalTopics) * 100)
 
   return (
     <aside className="w-64 flex flex-col h-screen shrink-0" style={{ background: '#0a0f1e', borderRight: '1px solid rgba(255,255,255,0.07)' }}>
 
-      {/* Logo */}
+      {/* Logo + User */}
       <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="flex items-center gap-2.5 mb-4">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
@@ -94,6 +97,7 @@ export default function Sidebar({ activeTopic, getStatus, onSelectTopic, studied
                 {topics.map((topic: Topic) => {
                   const status = getStatus(topic.id)
                   const isActive = activeTopic === topic.id
+                  const isLocked = !isAz900 && !session
 
                   return (
                     <button
@@ -108,11 +112,14 @@ export default function Sidebar({ activeTopic, getStatus, onSelectTopic, studied
                       onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
                       onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
                     >
-                      {/* Status dot */}
-                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status ? statusDot[status] : 'bg-slate-700'}`} />
+                      {/* Status dot or lock */}
+                      {isLocked
+                        ? <span className="text-slate-700 text-xs shrink-0">🔒</span>
+                        : <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status ? statusDot[status] : 'bg-slate-700'}`} />
+                      }
 
                       {/* Title */}
-                      <span className="text-xs font-medium flex-1 leading-tight truncate">
+                      <span className={`text-xs font-medium flex-1 leading-tight truncate ${isLocked ? 'text-slate-600' : ''}`}>
                         {topic.title}
                       </span>
 
@@ -129,9 +136,46 @@ export default function Sidebar({ activeTopic, getStatus, onSelectTopic, studied
         })}
       </nav>
 
-      {/* Footer legend */}
+      {/* Footer: user + legend */}
       <div className="px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="flex items-center gap-4 text-xs text-slate-600">
+        {status === 'loading' ? (
+          <div className="h-8 rounded-lg animate-pulse" style={{ background: 'rgba(255,255,255,0.05)' }} />
+        ) : session?.user ? (
+          <div className="flex items-center gap-2.5">
+            {session.user.image ? (
+              <Image
+                src={session.user.image}
+                alt={session.user.name ?? 'User'}
+                width={28}
+                height={28}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">
+                {session.user.name?.[0]?.toUpperCase() ?? 'U'}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-medium text-white truncate">{session.user.name}</div>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => signIn(undefined, { callbackUrl: window.location.href })}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-blue-400 transition-colors"
+            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}
+          >
+            <span>→</span> Sign in to unlock AZ-104
+          </button>
+        )}
+
+        <div className="flex items-center gap-4 text-xs text-slate-600 mt-3">
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"/>read</span>
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"/>quizzed</span>
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"/>mastered</span>

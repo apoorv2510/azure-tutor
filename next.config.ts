@@ -18,21 +18,16 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      // Next.js needs unsafe-inline + unsafe-eval for its runtime
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-      // Tailwind CSS needs unsafe-inline
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      // Only allow connections to our own domain + Pollinations AI
-      "connect-src 'self' https://text.pollinations.ai https://fonts.gstatic.com",
-      // Images from our domain + data URIs (for inline SVG)
-      "img-src 'self' data: blob:",
-      // Fonts
+      // OAuth providers + Pollinations AI
+      "connect-src 'self' https://text.pollinations.ai https://fonts.gstatic.com https://accounts.google.com https://github.com https://api.github.com",
+      // Profile images from Google and GitHub
+      "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com",
       "font-src 'self' data: https://fonts.gstatic.com",
-      // Disallow all frames
-      "frame-src 'none'",
-      // Disallow object embeds
+      // Allow Google OAuth popup/redirect frames
+      "frame-src https://accounts.google.com",
       "object-src 'none'",
-      // Force HTTPS for all requests
       "upgrade-insecure-requests",
     ].join('; '),
   },
@@ -48,10 +43,15 @@ const nextConfig: NextConfig = {
     ]
   },
 
-  // Disable powered-by header (don't expose tech stack)
-  poweredByHeader: false,
+  // Allow Next.js Image to load from Google and GitHub CDNs
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+    ],
+  },
 
-  // Strict mode catches more React bugs
+  poweredByHeader: false,
   reactStrictMode: true,
 }
 

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import AuthProvider from '@/app/components/AuthProvider'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
@@ -78,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="msapplication-TileImage" content="/icons/icon-144.png" />
       </head>
       <body className="antialiased overflow-hidden" style={{ background: '#080c14', color: '#f1f5f9' }}>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   )
