@@ -70,22 +70,22 @@ export default function AskView({ topic, onBack }: Props) {
 
   return (
     <div className="flex-1 flex flex-col h-full min-w-0">
-      {/* Header */}
-      <div className="px-6 py-3 flex items-center justify-between shrink-0"
+      {/* Header — hidden on mobile (mobile bar is in page.tsx) */}
+      <div className="hidden md:flex px-6 py-3 items-center justify-between shrink-0"
         style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} className="text-sm text-slate-500 hover:text-white transition-colors">← Back</button>
+        <div className="flex items-center gap-3 min-w-0">
+          <button onClick={onBack} className="text-sm text-slate-500 hover:text-white transition-colors shrink-0">← Back</button>
           <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
           <span
-            className={`text-xs font-mono font-semibold px-2 py-0.5 rounded-md ${isAz900 ? 'text-blue-300' : 'text-violet-300'}`}
+            className={`text-xs font-mono font-semibold px-2 py-0.5 rounded-md shrink-0 ${isAz900 ? 'text-blue-300' : 'text-violet-300'}`}
             style={{ background: isAz900 ? 'rgba(59,130,246,0.12)' : 'rgba(139,92,246,0.12)' }}>
             {topic.exam}
           </span>
-          <span className="text-sm font-medium text-white">{topic.title}</span>
+          <span className="text-sm font-medium text-white truncate">{topic.title}</span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs text-slate-500">Gemini 2.0 Flash</span>
+          <span className="text-xs text-slate-500">AI Tutor</span>
         </div>
       </div>
 

@@ -109,18 +109,24 @@ export default function QuizView({ topic, onDone, onBack }: Props) {
 
   return (
     <div className="flex-1 overflow-y-auto min-w-0">
-      {/* Header */}
-      <div className="sticky top-0 z-10 px-6 py-3 flex items-center justify-between"
+      {/* Header — hidden on mobile (mobile bar is in page.tsx) */}
+      <div className="hidden md:flex sticky top-0 z-10 px-6 py-3 items-center justify-between"
         style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="text-sm text-slate-500 hover:text-white transition-colors">← Back</button>
           <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
-          <span className="text-sm font-medium text-white">Quiz: {topic.title}</span>
+          <span className="text-sm font-medium text-white truncate">Quiz: {topic.title}</span>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-xs text-slate-500">{current + 1} / {questions.length}</div>
           <div className="text-xs font-semibold text-emerald-400">Score: {score}</div>
         </div>
+      </div>
+      {/* Mobile quiz header */}
+      <div className="md:hidden flex items-center justify-between px-4 py-2 text-xs"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <span className="text-slate-500">Q{current + 1}/{questions.length}</span>
+        <span className="text-emerald-400 font-semibold">Score: {score}</span>
       </div>
 
       {/* Progress bar */}
@@ -129,7 +135,7 @@ export default function QuizView({ topic, onDone, onBack }: Props) {
           style={{ width: `${(current / questions.length) * 100}%` }} />
       </div>
 
-      <div className="px-8 py-8 max-w-2xl mx-auto">
+      <div className="px-4 sm:px-8 py-5 sm:py-8 max-w-2xl mx-auto">
         {/* Question number */}
         <div className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-3">
           Question {current + 1} of {questions.length}

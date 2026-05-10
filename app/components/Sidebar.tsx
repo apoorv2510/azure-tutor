@@ -12,6 +12,8 @@ type Props = {
   studied: number
   totalTopics: number
   onShowResources: () => void
+  isOpen: boolean
+  onClose: () => void
 }
 
 const statusDot: Record<string, string> = {
@@ -20,167 +22,185 @@ const statusDot: Record<string, string> = {
   studied:  'bg-blue-400',
 }
 
-export default function Sidebar({ activeTopic, getStatus, onSelectTopic, studied, totalTopics, onShowResources }: Props) {
+export default function Sidebar({ activeTopic, getStatus, onSelectTopic, studied, totalTopics, onShowResources, isOpen, onClose }: Props) {
   const { data: session, status } = useSession()
   const pct = Math.round((studied / totalTopics) * 100)
 
+  const handleTopicClick = (id: string) => {
+    onSelectTopic(id)
+    onClose()
+  }
+
+  const handleResourcesClick = () => {
+    onShowResources()
+    onClose()
+  }
+
   return (
-    <aside className="w-64 flex flex-col h-screen shrink-0" style={{ background: '#0a0f1e', borderRight: '1px solid rgba(255,255,255,0.07)' }}>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-20 md:hidden"
+          onClick={onClose}
+        />
+      )}
 
-      {/* Logo + User */}
-      <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="flex items-center gap-2.5 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
-            Az
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-white">AzurePro</div>
-            <div className="text-xs text-slate-500">Certification Prep</div>
-          </div>
-        </div>
-
-        {/* Overall progress */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-500">Your progress</span>
-            <span className="text-xs font-semibold text-blue-400">{pct}%</span>
-          </div>
-          <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
-            <div
-              className="h-full rounded-full bg-blue-500 transition-all duration-700"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-          <div className="text-xs text-slate-600">{studied} of {totalTopics} topics started</div>
-        </div>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-3">
-
-        {/* Resources link */}
-        <button
-          onClick={onShowResources}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg mb-3 text-sm text-slate-400 hover:text-white transition-colors"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
-        >
-          <span className="text-base">🔗</span>
-          <span>All Resources & Links</span>
-        </button>
-
-        {curriculum.map((exam) => {
-          const isAz900 = exam.id === 'az900'
-          const topics = exam.topics
-          const masteredCount = topics.filter(t => getStatus(t.id) === 'mastered').length
-          const examColor = isAz900 ? 'text-blue-400' : 'text-violet-400'
-          const examBg = isAz900 ? 'rgba(59,130,246,0.1)' : 'rgba(139,92,246,0.1)'
-          const examBorder = isAz900 ? 'rgba(59,130,246,0.2)' : 'rgba(139,92,246,0.2)'
-
-          return (
-            <div key={exam.id} className="mb-4">
-              {/* Exam header */}
-              <div className="flex items-center justify-between px-2 mb-1.5">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-xs font-bold font-mono px-2 py-0.5 rounded-md ${examColor}`}
-                    style={{ background: examBg, border: `1px solid ${examBorder}` }}
-                  >
-                    {exam.title}
-                  </span>
-                  <span className="text-xs text-slate-600">{exam.level}</span>
-                </div>
-                <span className="text-xs text-slate-600">{masteredCount}/{topics.length}</span>
-              </div>
-
-              {/* Topic list */}
-              <div className="space-y-0.5">
-                {topics.map((topic: Topic) => {
-                  const status = getStatus(topic.id)
-                  const isActive = activeTopic === topic.id
-                  const isLocked = !isAz900 && !session
-
-                  return (
-                    <button
-                      key={topic.id}
-                      onClick={() => onSelectTopic(topic.id)}
-                      className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-2.5 group transition-all ${
-                        isActive
-                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40'
-                          : 'text-slate-400 hover:text-white'
-                      }`}
-                      style={!isActive ? { background: 'transparent' } : {}}
-                      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
-                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
-                    >
-                      {/* Status dot or lock */}
-                      {isLocked
-                        ? <span className="text-slate-700 text-xs shrink-0">🔒</span>
-                        : <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status ? statusDot[status] : 'bg-slate-700'}`} />
-                      }
-
-                      {/* Title */}
-                      <span className={`text-xs font-medium flex-1 leading-tight truncate ${isLocked ? 'text-slate-600' : ''}`}>
-                        {topic.title}
-                      </span>
-
-                      {/* Weight */}
-                      <span className={`text-xs shrink-0 font-mono ${isActive ? 'text-blue-200' : 'text-slate-700'}`}>
-                        {topic.weight.split('-')[0]}%
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
+      <aside
+        className={`
+          w-72 md:w-64 flex flex-col h-screen shrink-0
+          fixed md:relative inset-y-0 left-0 z-30
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}
+        style={{ background: '#0a0f1e', borderRight: '1px solid rgba(255,255,255,0.07)' }}
+      >
+        {/* Logo */}
+        <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+              Az
             </div>
-          )
-        })}
-      </nav>
+            <div className="flex-1">
+              <div className="text-sm font-semibold text-white">AzurePro</div>
+              <div className="text-xs text-slate-500">Certification Prep</div>
+            </div>
+            {/* Mobile close button */}
+            <button
+              onClick={onClose}
+              className="md:hidden w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white transition-colors"
+              style={{ background: 'rgba(255,255,255,0.06)' }}
+            >
+              ✕
+            </button>
+          </div>
 
-      {/* Footer: user + legend */}
-      <div className="px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-        {status === 'loading' ? (
-          <div className="h-8 rounded-lg animate-pulse" style={{ background: 'rgba(255,255,255,0.05)' }} />
-        ) : session?.user ? (
-          <div className="flex items-center gap-2.5">
-            {session.user.image ? (
-              <Image
-                src={session.user.image}
-                alt={session.user.name ?? 'User'}
-                width={28}
-                height={28}
-                className="rounded-full"
+          {/* Overall progress */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-slate-500">Your progress</span>
+              <span className="text-xs font-semibold text-blue-400">{pct}%</span>
+            </div>
+            <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
+              <div
+                className="h-full rounded-full bg-blue-500 transition-all duration-700"
+                style={{ width: `${pct}%` }}
               />
-            ) : (
-              <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">
-                {session.user.name?.[0]?.toUpperCase() ?? 'U'}
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <div className="text-xs font-medium text-white truncate">{session.user.name}</div>
-              <button
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
-              >
-                Sign out
-              </button>
             </div>
+            <div className="text-xs text-slate-600">{studied} of {totalTopics} topics started</div>
           </div>
-        ) : (
-          <button
-            onClick={() => signIn(undefined, { callbackUrl: window.location.href })}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-blue-400 transition-colors"
-            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}
-          >
-            <span>→</span> Sign in to unlock AZ-104
-          </button>
-        )}
-
-        <div className="flex items-center gap-4 text-xs text-slate-600 mt-3">
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"/>read</span>
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"/>quizzed</span>
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"/>mastered</span>
         </div>
-      </div>
-    </aside>
+
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto px-3 py-3">
+          {/* Resources link */}
+          <button
+            onClick={handleResourcesClick}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg mb-3 text-sm text-slate-400 hover:text-white transition-colors"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+          >
+            <span className="text-base">🔗</span>
+            <span>All Resources & Links</span>
+          </button>
+
+          {curriculum.map((exam) => {
+            const isAz900 = exam.id === 'az900'
+            const topics = exam.topics
+            const masteredCount = topics.filter(t => getStatus(t.id) === 'mastered').length
+            const examColor = isAz900 ? 'text-blue-400' : 'text-violet-400'
+            const examBg = isAz900 ? 'rgba(59,130,246,0.1)' : 'rgba(139,92,246,0.1)'
+            const examBorder = isAz900 ? 'rgba(59,130,246,0.2)' : 'rgba(139,92,246,0.2)'
+
+            return (
+              <div key={exam.id} className="mb-4">
+                <div className="flex items-center justify-between px-2 mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-xs font-bold font-mono px-2 py-0.5 rounded-md ${examColor}`}
+                      style={{ background: examBg, border: `1px solid ${examBorder}` }}
+                    >
+                      {exam.title}
+                    </span>
+                    <span className="text-xs text-slate-600">{exam.level}</span>
+                  </div>
+                  <span className="text-xs text-slate-600">{masteredCount}/{topics.length}</span>
+                </div>
+
+                <div className="space-y-0.5">
+                  {topics.map((topic: Topic) => {
+                    const status = getStatus(topic.id)
+                    const isActive = activeTopic === topic.id
+                    const isLocked = !isAz900 && !session
+
+                    return (
+                      <button
+                        key={topic.id}
+                        onClick={() => handleTopicClick(topic.id)}
+                        className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-2.5 transition-all ${
+                          isActive
+                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                        style={!isActive ? { background: 'transparent' } : {}}
+                        onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+                        onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
+                      >
+                        {isLocked
+                          ? <span className="text-slate-700 text-xs shrink-0">🔒</span>
+                          : <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status ? statusDot[status] : 'bg-slate-700'}`} />
+                        }
+                        <span className={`text-xs font-medium flex-1 leading-tight truncate ${isLocked ? 'text-slate-600' : ''}`}>
+                          {topic.title}
+                        </span>
+                        <span className={`text-xs shrink-0 font-mono ${isActive ? 'text-blue-200' : 'text-slate-700'}`}>
+                          {topic.weight.split('-')[0]}%
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+        </nav>
+
+        {/* Footer: user + legend */}
+        <div className="px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+          {status === 'loading' ? (
+            <div className="h-8 rounded-lg animate-pulse" style={{ background: 'rgba(255,255,255,0.05)' }} />
+          ) : session?.user ? (
+            <div className="flex items-center gap-2.5">
+              {session.user.image ? (
+                <Image src={session.user.image} alt={session.user.name ?? 'User'} width={28} height={28} className="rounded-full" />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">
+                  {session.user.name?.[0]?.toUpperCase() ?? 'U'}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-white truncate">{session.user.name}</div>
+                <button onClick={() => signOut({ callbackUrl: '/' })} className="text-xs text-slate-600 hover:text-slate-400 transition-colors">
+                  Sign out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => signIn(undefined, { callbackUrl: '/' })}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-blue-400 transition-colors"
+              style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}
+            >
+              <span>→</span> Sign in to unlock AZ-104
+            </button>
+          )}
+
+          <div className="flex items-center gap-4 text-xs text-slate-600 mt-3">
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"/>read</span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"/>quizzed</span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"/>mastered</span>
+          </div>
+        </div>
+      </aside>
+    </>
   )
 }

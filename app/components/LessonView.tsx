@@ -23,8 +23,8 @@ export default function LessonView({ topic, onStartQuiz, onStartChat }: Props) {
 
   return (
     <div className="flex-1 overflow-y-auto min-w-0">
-      {/* Top nav bar */}
-      <div className="sticky top-0 z-10 px-6 py-3 flex items-center justify-between"
+      {/* Top nav bar — hidden on mobile (mobile bar is in page.tsx) */}
+      <div className="hidden md:flex sticky top-0 z-10 px-6 py-3 items-center justify-between"
         style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="flex items-center gap-3 min-w-0">
           <span className={`text-xs font-mono font-semibold px-2.5 py-1 rounded-lg shrink-0 ${
@@ -40,7 +40,6 @@ export default function LessonView({ topic, onStartQuiz, onStartChat }: Props) {
             <div className="text-xs text-slate-500 truncate">{topic.domain}</div>
           </div>
         </div>
-
         <div className="flex items-center gap-2 shrink-0 ml-4">
           <span className="text-xs text-amber-400/70 font-medium hidden sm:block">{topic.weight} of exam</span>
           <button onClick={onStartQuiz}
@@ -60,7 +59,7 @@ export default function LessonView({ topic, onStartQuiz, onStartChat }: Props) {
         </div>
       </div>
 
-      <div className="px-8 py-6 max-w-3xl">
+      <div className="px-4 sm:px-8 py-4 sm:py-6 max-w-3xl">
 
         {/* Key focus strip */}
         <div className="mb-7 p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
