@@ -18,7 +18,7 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://pagead2.googlesyndication.com https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // OAuth providers + Pollinations AI + AdSense
       "connect-src 'self' https://text.pollinations.ai https://fonts.gstatic.com https://accounts.google.com https://github.com https://api.github.com https://pagead2.googlesyndication.com https://adservice.google.com",
